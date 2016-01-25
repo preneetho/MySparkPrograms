@@ -1,0 +1,12 @@
+Go to /home/edureka/preneeth/spark/ folder
+
+../sbt/sbt/bin/sbt
+
+> compile
+
+>package
+
+come out and at the scala>
+
+./spark-1.2.0-bin-hadoop2.4/bin/spark-submit --class "YouTube" --master local target/scala-2.10/spark-sample_2.10-1.0.jar
+
