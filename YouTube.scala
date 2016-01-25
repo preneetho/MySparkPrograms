@@ -9,9 +9,13 @@ object YouTube{
           val sc = new SparkContext(conf)
           val csv =sc.textFile("hdfs:/preneeth_hdfs/youtubedataNew.txt")
           // split / clean data
-          val headerAndRows = csv.map(line => line.split("\t")(3))
+          //val data = csv.map(line => line.split("\t")(3)).map(e=>e.trim)
           
-          val countRDD = sc.parallelize(headerAndRows.take(50).map(x => (x,1))).reduceByKey(_ + _)
+          val data = csv.map(line => line.split("\t").map(e=>e.trim))
+          
+          val goodData = data.collect { case l if (l.length > 3) => (l(3), 1)}
+          
+          val countRDD = goodData.reduceByKey(_ + _)
           
           val sortRDD = countRDD.map (x => x.swap).sortByKey(false)
                     
@@ -19,4 +23,7 @@ object YouTube{
           sc.stop
           //Modified files on Server
         }
+        
+        
+        
 }
