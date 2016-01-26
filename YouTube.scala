@@ -18,12 +18,11 @@ object YouTube{
           val countRDD = goodData.reduceByKey(_ + _)
           
           val sortRDD = countRDD.map (x => x.swap).sortByKey(false)
+          
+          val top5 = sortRDD.sortBy(_._1, false).take(5)
                     
           sortRDD.foreach(println)
           sc.stop
           //Modified files on Server
         }
-        
-        
-        
 }
