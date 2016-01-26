@@ -7,6 +7,7 @@ object YouTube{
           
           val conf = new SparkConf().setAppName("MyTube")
           val sc = new SparkContext(conf)
+          
           // Read the CSV file
           val csv =sc.textFile("hdfs:/preneeth_hdfs/youtubedataNew.txt")
           
