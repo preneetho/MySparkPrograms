@@ -2,21 +2,21 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
 
-//Finding the list of people with particular grade who have taken loan.
+//Get maximum number of loan given to which grade users (A-G).
 
-object Loan1{
+object Loan2{
 
 	//Program to fetch records with Grade == E
 	
         def removeQuotes(str: String) : String = {
-	        val newString = str.replaceAll("\"","") 
+        val newString = str.replaceAll("\"","") 
 	        return newString
         }
         
         
         def main(args: Array[String]): Unit = {
           
-            val conf = new SparkConf().setAppName("MyLoan1")
+            val conf = new SparkConf().setAppName("MyLoan2")
             val sc = new SparkContext(conf)
             // Read the CSV file
             val csv =sc.textFile("hdfs:/preneeth_hdfs/LoanData.csv")
@@ -24,9 +24,12 @@ object Loan1{
 	    val data = csv.map(line => line.split(",").map(_.trim).map(x => removeQuotes(x)))
 	    //eliminate junk data
             val goodData = data.collect { case l if (l.length > 8) => (l)}
-	    val header = List ("COL1","COL2","COL3","COL4","COL5","COL6","COL7","COL8","COL9")
-	    val maps = goodData.map(splits => header.zip(splits).toMap)
-            val result = maps.filter(x => x("COL9") == "E")
-            result.foreach(println)
+	    val mytuple = goodData.map (x => (x(8), x(2).toInt))
+	    val result = mytuple.reduceByKey((x,y) => math.max(x,y))
+	    result.saveAsTextFile("hdfs:/preneeth_hdfs/result.txt")
+	    result.saveAsTextFile("/home/edureka/preneeth/result.txt")
+	    
+	    result.foreach(println)
         }
 }
+
